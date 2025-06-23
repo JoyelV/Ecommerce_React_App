@@ -1,15 +1,17 @@
-import { Outlet } from 'react-router-dom';
+import React from 'react'; 
+import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
+import AppRoutes from './routes/index';
 import './App.css';
 
 const App: React.FC = () => {
   return (
-    <div className="app">
+    <BrowserRouter>
       <Navbar />
       <main>
-        <Outlet />
+        <AppRoutes />
       </main>
-    </div>
+    </BrowserRouter>
   );
 };
 

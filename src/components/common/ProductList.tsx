@@ -1,9 +1,9 @@
-// src/components/common/ProductList.tsx
-import { useState, useEffect } from 'react';
-import { fetchProducts, Product } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { FilterState, Product } from '../../types';
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
 import './ProductList.css';
-import { FilterState } from '../../types';
+import { fetchProducts } from '../../services/api';
 
 interface ProductListProps {
   filters: FilterState;
@@ -43,15 +43,12 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
 
       filtered = filtered.filter(
         (product) =>
-          product.price >= filters.priceRange[0] &&
-          product.price <= filters.priceRange[1]
+          product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1]
       );
 
       if (filters.ratings.length > 0) {
         filtered = filtered.filter((product) =>
-          filters.ratings.some(
-            (rating) => Math.round(product.rating.rate) >= rating
-          )
+          filters.ratings.some((rating) => Math.round(product.rating.rate) >= rating)
         );
       }
 
@@ -77,37 +74,36 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
     <div className="product-list">
       {filteredProducts.length > 0 ? (
         filteredProducts.map((product) => (
-          <div key={product.id} className="product-item">
-            <div className="product-image-container">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="product-image"
-              />
-              <button
-                className="wishlist-icon"
-                onClick={() => toggleWishlist(product.id)}
-              >
-                {wishlist.has(product.id) ? <FaHeart /> : <FaRegHeart />}
-              </button>
+          <Link to={`/product/${product.id}`} key={product.id} className="product-card-link">
+            <div className="product-item">
+              <div className="product-image-container">
+                <img src={product.image} alt={product.title} className="product-image" />
+                <button
+                  className="wishlist-icon"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent link navigation
+                    toggleWishlist(product.id);
+                  }}
+                >
+                  {wishlist.has(product.id) ? <FaHeart /> : <FaRegHeart />}
+                </button>
+              </div>
+              <h3 className="product-title">{product.title}</h3>
+              <p className="product-description">
+                {product.description.substring(0, 100)}...
+              </p>
+              <p className="product-price">${product.price.toFixed(2)}</p>
+              <div className="product-rating">
+                {[...Array(5)].map((_, i) => (
+                  <FaStar
+                    key={i}
+                    className={`star ${i < Math.round(product.rating.rate) ? 'filled' : ''}`}
+                  />
+                ))}
+                <span className="rating-count">({product.rating.count})</span>
+              </div>
             </div>
-            <h3 className="product-title">{product.title}</h3>
-            <p className="product-description">
-              {product.description.substring(0, 100)}...
-            </p>
-            <p className="product-price">${product.price.toFixed(2)}</p>
-            <div className="product-rating">
-              {[...Array(5)].map((_, i) => (
-                <FaStar
-                  key={i}
-                  className={`star ${
-                    i < Math.round(product.rating.rate) ? 'filled' : ''
-                  }`}
-                />
-              ))}
-              <span className="rating-count">({product.rating.count})</span>
-            </div>
-          </div>
+          </Link>
         ))
       ) : (
         <p>No products match the selected filters.</p>

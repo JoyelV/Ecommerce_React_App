@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import { Link, NavLink } from 'react-router-dom';
+import { FaSearch, FaBars, FaTimes, FaShoppingCart } from 'react-icons/fa';
 import './Navbar.css';
+import { useCart } from '../../context/CartContext';
 
 const Navbar: React.FC = () => {
   const [isZoffiOpen, setIsZoffiOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { cart } = useCart();
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="navbar">
@@ -85,9 +88,10 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          <NavLink to="/cart" className="navbar-link cart-link">
-            Cart
-          </NavLink>
+          <Link to="/cart" className="icon-button">
+          <FaShoppingCart />
+          {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+        </Link>
         </div>
       </div>
     </nav>
