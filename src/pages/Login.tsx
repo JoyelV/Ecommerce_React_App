@@ -7,15 +7,21 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(email, password)) {
-      navigate('/');
+    const result = await login(email, password);
+    if (result.success) {
+      setMessage(result.message);
+      setTimeout(() => {
+        setMessage(null);
+        navigate('/');
+      }, 2000); 
     } else {
-      setError('Invalid email or password');
+      setError(result.message);
     }
   };
 
@@ -23,6 +29,7 @@ const Login: React.FC = () => {
     <div className="login-page">
       <h2>Login</h2>
       {error && <p className="error-message">{error}</p>}
+      {message && <p className="success-message">{message}</p>}
       <form onSubmit={handleSubmit} className="login-form">
         <input
           type="email"

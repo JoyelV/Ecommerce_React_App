@@ -17,38 +17,64 @@ interface Order {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  register: (username: string, email: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  register: (username: string, email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   placeOrder: (items: { product: Product; quantity: number }[], total: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const users: User[] = []; 
 let orderIdCounter = 1;
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (email: string, password: string): boolean => {
-    const foundUser = users.find((u) => u.email === email && password === 'password123');
-    if (foundUser) {
-      setUser(foundUser);
-      return true;
+  const login = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch('https://fakestoreapi.com/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password }),
+      });
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        setUser({ id: 1, username: email.split('@')[0], email }); 
+        return { success: true, message: 'Logged in successfully!' };
+      }
+      return { success: false, message: 'Invalid email or password' };
+    } catch (error) {
+      console.error('Login failed:', error);
+      return { success: false, message: 'Login failed due to a network error' };
     }
-    return false;
   };
 
-  const register = (username: string, email: string, password: string): boolean => {
-    if (users.find((u) => u.email === email)) return false;
-    const newUser: User = { id: users.length + 1, username, email };
-    users.push(newUser);
-    setUser(newUser);
-    return true;
+  const register = async (username: string, email: string, password: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch('https://fakestoreapi.com/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setUser({ id: data.id, username, email });
+        return { success: true, message: 'Registration successful! Please log in.' };
+      }
+      return { success: false, message: 'Registration failed. Email may be in use.' };
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return { success: false, message: 'Registration failed due to a network error' };
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
   };
 
