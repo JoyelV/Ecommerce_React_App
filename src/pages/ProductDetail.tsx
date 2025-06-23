@@ -32,7 +32,7 @@ const ProductDetail: React.FC = () => {
   const handleAddToCart = () => {
     if (product) {
       addToCart(product);
-      alert('Product added to cart!'); // Temporary feedback
+      alert('Product added to cart!'); 
     }
   };
 
