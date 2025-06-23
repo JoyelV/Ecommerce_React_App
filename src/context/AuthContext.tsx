@@ -23,7 +23,7 @@ interface AuthContextType {
   logout: () => void;
   placeOrder: (items: { product: Product; quantity: number }[], total: number) => void;
   processPayment: (orderId: number, paymentDetails: { cardNumber: string; expiry: string; cvv: string }) => Promise<{ success: boolean; message: string }>;
-  getLatestOrder: () => Order | null; 
+  getLatestOrder: () => Order | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +40,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password }),
       });
+      if (!response.ok) {
+        const text = await response.text(); 
+        console.error('Login response:', text);
+        return { success: false, message: `Login failed with status ${response.status}. Check credentials or API status.` };
+      }
       const data = await response.json();
       if (data.token) {
         localStorage.setItem('token', data.token);
@@ -58,14 +63,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const response = await fetch('https://fakestoreapi.com/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
       });
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Registration response:', text);
+        return { success: false, message: `Registration failed with status ${response.status}. API may not support direct registration.` };
+      }
       const data = await response.json();
-      if (response.ok) {
+      if (data.id) {
         setUser({ id: data.id, username, email });
         return { success: true, message: 'Registration successful! Please log in.' };
       }
-      return { success: false, message: 'Registration failed. Email may be in use.' };
+      return { success: false, message: 'Registration failed. Please try again.' };
     } catch (error) {
       console.error('Registration failed:', error);
       return { success: false, message: 'Registration failed due to a network error' };

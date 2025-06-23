@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('mor_2314'); 
+  const [password, setPassword] = useState('83r5^_'); 
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const { login } = useAuth();
@@ -32,10 +32,10 @@ const Login: React.FC = () => {
       {message && <p className="success-message">{message}</p>}
       <form onSubmit={handleSubmit} className="login-form">
         <input
-          type="email"
+          type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder="Username"
           className="login-input"
           required
         />
