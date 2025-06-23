@@ -1,14 +1,8 @@
-// src/components/common/Sidebar.tsx
 import { useState, useEffect } from 'react';
 import './Sidebar.css';
 import { FaStar } from 'react-icons/fa';
 import { fetchProducts } from '../../services/api';
-
-interface FilterState {
-  brands: string[];
-  priceRange: [number, number];
-  ratings: number[];
-}
+import { FilterState } from '../../types';
 
 interface SidebarProps {
   filters: FilterState;
@@ -22,14 +16,18 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
     price: true,
     rating: true,
   });
-  const [priceRange, setPriceRange] = useState<[number, number]>(filters.priceRange);
-  const [brands, setBrands] = useState<string[]>([]); // Dynamic brands from API
-  const ratings = [5, 4, 3, 2]; // Define ratings array
+  const [priceRange, setPriceRange] = useState<[number, number]>(
+    filters.priceRange
+  );
+  const [brands, setBrands] = useState<string[]>([]);
+  const ratings = [5, 4, 3, 2];
 
   useEffect(() => {
     const getBrands = async () => {
       const products = await fetchProducts();
-      const uniqueBrands = [...new Set(products.map((product) => product.category))];
+      const uniqueBrands = [
+        ...new Set(products.map((product) => product.category)),
+      ];
       setBrands(uniqueBrands);
     };
     getBrands();
@@ -90,18 +88,26 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
         </div>
         {expanded.category && (
           <div className="card-content">
-            <input type="text" placeholder="Search brand..." className="search-input" />
+            <input
+              type="text"
+              placeholder="Search brand..."
+              className="search-input"
+            />
             <ul className="brand-list">
               {brands.map((brand) => (
                 <li
                   key={brand}
-                  className={`brand-item ${localFilters.brands.includes(brand) ? 'selected' : ''}`}
+                  className={`brand-item ${
+                    localFilters.brands.includes(brand) ? 'selected' : ''
+                  }`}
                   onClick={() => handleBrandChange(brand)}
                 >
                   <span>
                     {brand} <small>123</small>
                   </span>
-                  {localFilters.brands.includes(brand) && <span className="checkmark">✔</span>}
+                  {localFilters.brands.includes(brand) && (
+                    <span className="checkmark">✔</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -162,7 +168,11 @@ const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
         {expanded.rating && (
           <div className="card-content rating-section">
             {ratings.map((star) => (
-              <div className="rating-row" key={star} onClick={() => handleRatingChange(star)}>
+              <div
+                className="rating-row"
+                key={star}
+                onClick={() => handleRatingChange(star)}
+              >
                 {[...Array(5)].map((_, i) => (
                   <FaStar
                     key={i}

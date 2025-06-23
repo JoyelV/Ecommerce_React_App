@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import Sidebar from '../components/common/Sidebar.tsx';
-import ProductList from '../components/common/ProductList.tsx';
+import Sidebar from '../components/common/Sidebar';
+import ProductList from '../components/common/ProductList';
 import './Home.css';
-
-interface FilterState {
-  brands: string[];
-  priceRange: [number, number];
-  ratings: number[];
-}
+import { FilterState } from '../types';
 
 const Home: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
