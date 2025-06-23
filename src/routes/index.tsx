@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import App from '../App';
 import Home from '../pages/Home';
 import ProductDetail from '../pages/ProductDetail';
@@ -6,6 +6,13 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
+import OrderHistory from '../pages/OrderHistory';
+import { useAuth } from '../context/AuthContext';
+
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  return user ? <>{children}</> : <Navigate to="/login" />;
+};
 
 const AppRoutes = () => (
   <Routes>
@@ -16,6 +23,14 @@ const AppRoutes = () => (
       <Route path="register" element={<Register />} />
       <Route path="cart" element={<Cart />} />
       <Route path="checkout" element={<Checkout />} />
+       <Route
+        path="order-history"
+        element={
+          <PrivateRoute>
+            <OrderHistory />
+          </PrivateRoute>
+        }
+      />
     </Route>
   </Routes>
 );

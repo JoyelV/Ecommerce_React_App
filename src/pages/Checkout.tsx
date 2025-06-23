@@ -7,7 +7,7 @@ import './Checkout.css';
 
 const Checkout: React.FC = () => {
   const { cart, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, placeOrder } = useAuth();
   const navigate = useNavigate();
 
   const [shippingDetails, setShippingDetails] = useState({
@@ -36,13 +36,15 @@ const Checkout: React.FC = () => {
 
   const calculateTotal = () => {
     const subtotal = parseFloat(calculateSubtotal());
-    return (subtotal + 5).toFixed(2); // Adding $5 for shipping
+    return (subtotal + 5).toFixed(2); 
   };
 
   const handlePlaceOrder = () => {
+    const total = parseFloat(calculateTotal());
+    placeOrder(cart.map(item => ({ product: item.product, quantity: item.quantity })), total);
     setIsOrderPlaced(true);
-    clearCart(); // Simulate clearing cart after order
-    setTimeout(() => setIsOrderPlaced(false), 3000); // Reset after 3 seconds
+    clearCart();
+    setTimeout(() => setIsOrderPlaced(false), 3000); 
   };
 
   if (cart.length === 0) {

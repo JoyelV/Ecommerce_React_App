@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Product } from '../types';
 
 interface User {
   id: number;
@@ -6,22 +7,32 @@ interface User {
   email: string;
 }
 
+interface Order {
+  id: number;
+  userId: number;
+  date: string;
+  total: number;
+  items: { product: Product; quantity: number }[];
+}
+
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => boolean;
   register: (username: string, email: string, password: string) => boolean;
   logout: () => void;
+  placeOrder: (items: { product: Product; quantity: number }[], total: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const users: User[] = []; // In-memory store for demo
+const users: User[] = []; 
+let orderIdCounter = 1;
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   const login = (email: string, password: string): boolean => {
-    const foundUser = users.find((u) => u.email === email && password === 'password123'); // Simple check
+    const foundUser = users.find((u) => u.email === email && password === 'password123');
     if (foundUser) {
       setUser(foundUser);
       return true;
@@ -41,8 +52,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
+  const placeOrder = (items: { product: Product; quantity: number }[], total: number) => {
+    if (user) {
+      const newOrder: Order = {
+        id: orderIdCounter++,
+        userId: user.id,
+        date: new Date().toLocaleDateString(),
+        total,
+        items,
+      };
+      const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+      storedOrders.push(newOrder);
+      localStorage.setItem('orders', JSON.stringify(storedOrders));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, placeOrder }}>
       {children}
     </AuthContext.Provider>
   );
