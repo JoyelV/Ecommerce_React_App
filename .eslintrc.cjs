@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true, // Add for Vite config files
+    node: true,
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -20,13 +20,13 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended', 
   ],
   rules: {
-    'prettier/prettier': ['error', { endOfLine: 'auto' }], // Handle line ending issues
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
-    'react/prop-types': 'off', // TypeScript handles prop types
-    'react/react-in-jsx-scope': 'off', // Not needed with React 18
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'import/extensions': [
       'error',
@@ -39,11 +39,11 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       { devDependencies: ['**/*.test.ts', '**/*.test.tsx', 'vite.config.ts'] },
-    ], // Allow dev imports in config/test files
+    ],
   },
   settings: {
     react: {
-      version: 'detect', // Auto-detect React version
+      version: 'detect',
     },
     'import/resolver': {
       typescript: {

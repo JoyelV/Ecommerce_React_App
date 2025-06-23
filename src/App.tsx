@@ -1,7 +1,14 @@
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/common/Navbar.tsx";
+import "./App.css";
+
 const App: React.FC = () => {
   return (
-    <div>
-      <h1>E-Commerce App</h1>
+    <div className="app">
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };
