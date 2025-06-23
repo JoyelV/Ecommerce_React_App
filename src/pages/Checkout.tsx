@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Product } from '../types';
+import { useAuth } from '../context/AuthContext';
 import './Checkout.css';
 
 const Checkout: React.FC = () => {
   const { cart, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [shippingDetails, setShippingDetails] = useState({
     name: '',
@@ -14,6 +17,11 @@ const Checkout: React.FC = () => {
     postalCode: '',
   });
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
