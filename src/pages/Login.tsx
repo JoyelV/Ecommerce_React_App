@@ -19,7 +19,7 @@ const Login: React.FC = () => {
       setTimeout(() => {
         setMessage(null);
         navigate('/');
-      }, 2000); 
+      }, 2000);
     } else {
       setError(result.message);
     }

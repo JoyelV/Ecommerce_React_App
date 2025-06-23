@@ -8,8 +8,11 @@ import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import OrderHistory from '../pages/OrderHistory';
 import { useAuth } from '../context/AuthContext';
+import Profile from '../pages/Profile';
 
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { user } = useAuth();
   return user ? <>{children}</> : <Navigate to="/login" />;
 };
@@ -23,11 +26,19 @@ const AppRoutes = () => (
       <Route path="register" element={<Register />} />
       <Route path="cart" element={<Cart />} />
       <Route path="checkout" element={<Checkout />} />
-       <Route
+      <Route
         path="order-history"
         element={
           <PrivateRoute>
             <OrderHistory />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="profile"
+        element={
+          <PrivateRoute>
+            <Profile />
           </PrivateRoute>
         }
       />

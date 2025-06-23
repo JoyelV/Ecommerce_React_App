@@ -13,6 +13,7 @@ interface Order {
   date: string;
   total: number;
   items: { product: Product; quantity: number }[];
+  status?: string;
 }
 
 interface AuthContextType {
@@ -21,6 +22,8 @@ interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   placeOrder: (items: { product: Product; quantity: number }[], total: number) => void;
+  processPayment: (orderId: number, paymentDetails: { cardNumber: string; expiry: string; cvv: string }) => Promise<{ success: boolean; message: string }>;
+  getLatestOrder: () => Order | null; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,7 +43,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const data = await response.json();
       if (data.token) {
         localStorage.setItem('token', data.token);
-        setUser({ id: 1, username: email.split('@')[0], email }); 
+        setUser({ id: 1, username: email.split('@')[0], email });
         return { success: true, message: 'Logged in successfully!' };
       }
       return { success: false, message: 'Invalid email or password' };
@@ -55,11 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const response = await fetch('https://fakestoreapi.com/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
+        body: JSON.stringify({ username, email, password }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -86,6 +85,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         date: new Date().toLocaleDateString(),
         total,
         items,
+        status: 'Pending',
       };
       const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
       storedOrders.push(newOrder);
@@ -93,8 +93,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const processPayment = async (orderId: number, paymentDetails: { cardNumber: string; expiry: string; cvv: string }): Promise<{ success: boolean; message: string }> => {
+    try {
+      const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const order = storedOrders.find((o: Order) => o.id === orderId);
+      if (!order || order.userId !== user?.id) {
+        return { success: false, message: 'Order not found or unauthorized' };
+      }
+
+      if (!/^\d{16}$/.test(paymentDetails.cardNumber) || !/^\d{4}$/.test(paymentDetails.cvv) || !/^\d{2}\/\d{2}$/.test(paymentDetails.expiry)) {
+        return { success: false, message: 'Invalid payment details' };
+      }
+
+      order.status = 'Completed';
+      localStorage.setItem('orders', JSON.stringify(storedOrders));
+      return { success: true, message: 'Payment successful!' };
+    } catch (error) {
+      console.error('Payment failed:', error);
+      return { success: false, message: 'Payment processing failed' };
+    }
+  };
+
+  const getLatestOrder = (): Order | null => {
+    const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+    return storedOrders.length > 0 ? storedOrders[storedOrders.length - 1] : null;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, placeOrder }}>
+    <AuthContext.Provider value={{ user, login, register, logout, placeOrder, processPayment, getLatestOrder }}>
       {children}
     </AuthContext.Provider>
   );

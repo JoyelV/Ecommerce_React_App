@@ -1,0 +1,108 @@
+.profile-page {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.profile-page h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profile-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #fff;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.profile-field label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.profile-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.profile-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.profile-button:not(.logout) {
+  background-color: #007bff;
+  color: white;
+}
+
+.profile-button:hover:not(.logout) {
+  background-color: #0056b3;
+}
+
+.logout {
+  background-color: #dc3545;
+  color: white;
+}
+
+.logout:hover {
+  background-color: #c82333;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-button {
+    width: 100%;
+  }
+}

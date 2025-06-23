@@ -7,7 +7,7 @@ import './Checkout.css';
 
 const Checkout: React.FC = () => {
   const { cart, clearCart } = useCart();
-  const { user, placeOrder } = useAuth();
+  const { user, placeOrder, processPayment, getLatestOrder } = useAuth();
   const navigate = useNavigate();
 
   const [shippingDetails, setShippingDetails] = useState({
@@ -16,35 +16,65 @@ const Checkout: React.FC = () => {
     city: '',
     postalCode: '',
   });
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  });
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   if (!user) {
     navigate('/login');
     return null;
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'shipping' | 'payment') => {
     const { name, value } = e.target;
-    setShippingDetails((prev) => ({ ...prev, [name]: value }));
+    if (type === 'shipping') {
+      setShippingDetails((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setPaymentDetails((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const calculateSubtotal = () => {
-    return cart
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-      .toFixed(2);
+    return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0).toFixed(2);
   };
 
   const calculateTotal = () => {
     const subtotal = parseFloat(calculateSubtotal());
-    return (subtotal + 5).toFixed(2); 
+    return (subtotal + 5).toFixed(2); // Adding $5 for shipping
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (!shippingDetails.name || !shippingDetails.address || !shippingDetails.city || !shippingDetails.postalCode) {
+      setError('Please fill all shipping details');
+      return;
+    }
+
     const total = parseFloat(calculateTotal());
     placeOrder(cart.map(item => ({ product: item.product, quantity: item.quantity })), total);
-    setIsOrderPlaced(true);
-    clearCart();
-    setTimeout(() => setIsOrderPlaced(false), 3000); 
+
+    const latestOrder = getLatestOrder();
+    if (latestOrder) {
+      const paymentResult = await processPayment(latestOrder.id, paymentDetails);
+      if (paymentResult.success) {
+        setMessage(paymentResult.message);
+        setIsOrderPlaced(true);
+        clearCart();
+        setTimeout(() => {
+          setMessage(null);
+          setIsOrderPlaced(false);
+          navigate('/');
+        }, 3000);
+      } else {
+        setError(paymentResult.message);
+      }
+    } else {
+      setError('Failed to retrieve the latest order');
+    }
   };
 
   if (cart.length === 0) {
@@ -56,6 +86,8 @@ const Checkout: React.FC = () => {
       <h2>Checkout</h2>
       {!isOrderPlaced ? (
         <>
+          {error && <p className="error-message">{error}</p>}
+          {message && <p className="success-message">{message}</p>}
           <div className="checkout-container">
             <div className="cart-summary">
               <h3>Order Summary</h3>
@@ -85,7 +117,7 @@ const Checkout: React.FC = () => {
                 name="name"
                 placeholder="Full Name"
                 value={shippingDetails.name}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange(e, 'shipping')}
                 className="shipping-input"
               />
               <input
@@ -93,7 +125,7 @@ const Checkout: React.FC = () => {
                 name="address"
                 placeholder="Address"
                 value={shippingDetails.address}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange(e, 'shipping')}
                 className="shipping-input"
               />
               <input
@@ -101,7 +133,7 @@ const Checkout: React.FC = () => {
                 name="city"
                 placeholder="City"
                 value={shippingDetails.city}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange(e, 'shipping')}
                 className="shipping-input"
               />
               <input
@@ -109,13 +141,38 @@ const Checkout: React.FC = () => {
                 name="postalCode"
                 placeholder="Postal Code"
                 value={shippingDetails.postalCode}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange(e, 'shipping')}
+                className="shipping-input"
+              />
+              <h3>Payment Details</h3>
+              <input
+                type="text"
+                name="cardNumber"
+                placeholder="Card Number (16 digits)"
+                value={paymentDetails.cardNumber}
+                onChange={(e) => handleInputChange(e, 'payment')}
+                className="shipping-input"
+              />
+              <input
+                type="text"
+                name="expiry"
+                placeholder="MM/YY"
+                value={paymentDetails.expiry}
+                onChange={(e) => handleInputChange(e, 'payment')}
+                className="shipping-input"
+              />
+              <input
+                type="text"
+                name="cvv"
+                placeholder="CVV (4 digits)"
+                value={paymentDetails.cvv}
+                onChange={(e) => handleInputChange(e, 'payment')}
                 className="shipping-input"
               />
               <button
                 onClick={handlePlaceOrder}
                 className="place-order-button"
-                disabled={!shippingDetails.name || !shippingDetails.address || !shippingDetails.city || !shippingDetails.postalCode}
+                disabled={!shippingDetails.name || !shippingDetails.address || !shippingDetails.city || !shippingDetails.postalCode || !paymentDetails.cardNumber || !paymentDetails.expiry || !paymentDetails.cvv}
               >
                 Place Order
               </button>
