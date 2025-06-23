@@ -1,29 +1,78 @@
-import { useState } from 'react';
+// src/components/common/Sidebar.tsx
+import { useState, useEffect } from 'react';
 import './Sidebar.css';
 import { FaStar } from 'react-icons/fa';
+import { fetchProducts } from '../../services/api';
 
-const Sidebar: React.FC = () => {
-  const [selectedBrand, setSelectedBrand] = useState<string>('Nike');
-  const [priceRange, setPriceRange] = useState<[number, number]>([29000, 29000]);
+interface FilterState {
+  brands: string[];
+  priceRange: [number, number];
+  ratings: number[];
+}
+
+interface SidebarProps {
+  filters: FilterState;
+  onFilterChange: (filters: FilterState) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ filters, onFilterChange }) => {
+  const [localFilters, setLocalFilters] = useState<FilterState>(filters);
   const [expanded, setExpanded] = useState({
     category: true,
     price: true,
     rating: true,
   });
+  const [priceRange, setPriceRange] = useState<[number, number]>(filters.priceRange);
+  const [brands, setBrands] = useState<string[]>([]); // Dynamic brands from API
+  const ratings = [5, 4, 3, 2]; // Define ratings array
 
-  const brands = ['Nike', 'Adidas', 'Apple', 'Puma'];
-  const ratings = [5, 4, 3, 2];
+  useEffect(() => {
+    const getBrands = async () => {
+      const products = await fetchProducts();
+      const uniqueBrands = [...new Set(products.map((product) => product.category))];
+      setBrands(uniqueBrands);
+    };
+    getBrands();
+  }, []);
+
+  useEffect(() => {
+    setLocalFilters(filters);
+    setPriceRange(filters.priceRange);
+  }, [filters]);
 
   const toggleSection = (section: keyof typeof expanded) => {
     setExpanded((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+  const handleBrandChange = (brand: string) => {
+    const updatedBrands = localFilters.brands.includes(brand)
+      ? localFilters.brands.filter((b) => b !== brand)
+      : [...localFilters.brands, brand];
+    const newFilters = { ...localFilters, brands: updatedBrands };
+    setLocalFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
   const handlePriceChange = (index: 0 | 1, value: number) => {
-    const newRange: [number, number] = [...priceRange];
-    newRange[index] = value;
-    if (newRange[1] - newRange[0] >= 500) {
-      setPriceRange(newRange);
+    const newRange = [...priceRange] as [number, number];
+    if (index === 0) {
+      newRange[0] = Math.min(value, newRange[1] - 500);
+    } else {
+      newRange[1] = Math.max(value, newRange[0] + 500);
     }
+    setPriceRange(newRange);
+    const newFilters = { ...localFilters, priceRange: newRange };
+    setLocalFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
+  const handleRatingChange = (rating: number) => {
+    const updatedRatings = localFilters.ratings.includes(rating)
+      ? localFilters.ratings.filter((r) => r !== rating)
+      : [...localFilters.ratings, rating];
+    const newFilters = { ...localFilters, ratings: updatedRatings };
+    setLocalFilters(newFilters);
+    onFilterChange(newFilters);
   };
 
   return (
@@ -46,11 +95,13 @@ const Sidebar: React.FC = () => {
               {brands.map((brand) => (
                 <li
                   key={brand}
-                  className={`brand-item ${selectedBrand === brand ? 'selected' : ''}`}
-                  onClick={() => setSelectedBrand(brand)}
+                  className={`brand-item ${localFilters.brands.includes(brand) ? 'selected' : ''}`}
+                  onClick={() => handleBrandChange(brand)}
                 >
-                  <span>{brand} <small>123</small></span>
-                  {selectedBrand === brand && <span className="checkmark">✔</span>}
+                  <span>
+                    {brand} <small>123</small>
+                  </span>
+                  {localFilters.brands.includes(brand) && <span className="checkmark">✔</span>}
                 </li>
               ))}
             </ul>
@@ -65,7 +116,7 @@ const Sidebar: React.FC = () => {
           <span className="arrow">▾</span>
         </div>
         {expanded.price && (
-          <div className="card-content price-section">
+          <div className="card-content">
             <div className="histogram">
               {[...Array(15)].map((_, i) => (
                 <div
@@ -83,9 +134,7 @@ const Sidebar: React.FC = () => {
                 max="100000"
                 step="100"
                 value={priceRange[0]}
-                onChange={(e) =>
-                  handlePriceChange(0, Math.min(Number(e.target.value), priceRange[1] - 500))
-                }
+                onChange={(e) => handlePriceChange(0, Number(e.target.value))}
               />
               <input
                 type="range"
@@ -93,9 +142,7 @@ const Sidebar: React.FC = () => {
                 max="100000"
                 step="100"
                 value={priceRange[1]}
-                onChange={(e) =>
-                  handlePriceChange(1, Math.max(Number(e.target.value), priceRange[0] + 500))
-                }
+                onChange={(e) => handlePriceChange(1, Number(e.target.value))}
               />
             </div>
             <div className="price-values">
@@ -115,7 +162,7 @@ const Sidebar: React.FC = () => {
         {expanded.rating && (
           <div className="card-content rating-section">
             {ratings.map((star) => (
-              <div className="rating-row" key={star}>
+              <div className="rating-row" key={star} onClick={() => handleRatingChange(star)}>
                 {[...Array(5)].map((_, i) => (
                   <FaStar
                     key={i}
