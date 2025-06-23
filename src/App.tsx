@@ -1,6 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Navbar from "./components/common/Navbar.tsx";
-import "./App.css";
+import { Outlet } from 'react-router-dom';
+import Navbar from './components/common/Navbar.tsx';
+import './App.css';
 
 const App: React.FC = () => {
   return (

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
-import "./Navbar.css";
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import './Navbar.css';
 
 const Navbar: React.FC = () => {
   const [isZoffiOpen, setIsZoffiOpen] = useState(false);
@@ -29,12 +29,15 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Hamburger Icon */}
-        <div className="navbar-mobile-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        <div
+          className="navbar-mobile-icon"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
           {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </div>
 
         {/* Right Menu */}
-        <div className={`navbar-right ${isMobileMenuOpen ? "active" : ""}`}>
+        <div className={`navbar-right ${isMobileMenuOpen ? 'active' : ''}`}>
           <div className="navbar-dropdown">
             <button
               type="button"
@@ -45,14 +48,22 @@ const Navbar: React.FC = () => {
             </button>
             {isZoffiOpen && (
               <ul className="navbar-dropdown-menu">
-                <li><NavLink to="/category/men">Men</NavLink></li>
-                <li><NavLink to="/category/women">Women</NavLink></li>
-                <li><NavLink to="/category/electronics">Electronics</NavLink></li>
+                <li>
+                  <NavLink to="/category/men">Men</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/category/women">Women</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/category/electronics">Electronics</NavLink>
+                </li>
               </ul>
             )}
           </div>
 
-          <NavLink to="/seller" className="navbar-link">Become a Seller</NavLink>
+          <NavLink to="/seller" className="navbar-link">
+            Become a Seller
+          </NavLink>
 
           <div className="navbar-dropdown">
             <button
@@ -64,13 +75,19 @@ const Navbar: React.FC = () => {
             </button>
             {isMoreOpen && (
               <ul className="navbar-dropdown-menu">
-                <li><NavLink to="/about">About</NavLink></li>
-                <li><NavLink to="/contact">Contact</NavLink></li>
+                <li>
+                  <NavLink to="/about">About</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/contact">Contact</NavLink>
+                </li>
               </ul>
             )}
           </div>
 
-          <NavLink to="/cart" className="navbar-link cart-link">Cart</NavLink>
+          <NavLink to="/cart" className="navbar-link cart-link">
+            Cart
+          </NavLink>
         </div>
       </div>
     </nav>
