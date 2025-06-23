@@ -19,7 +19,6 @@ const Home: React.FC = () => {
     <div className="home">
       <Sidebar filters={filters} onFilterChange={handleFilterChange} />
       <div className="home-content">
-        <h2>Product Listing Page</h2>
         <ProductList filters={filters} />
       </div>
     </div>

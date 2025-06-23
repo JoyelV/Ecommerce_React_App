@@ -1,19 +1,27 @@
 .product-detail {
   display: flex;
   max-width: 1200px;
-  margin: 20px auto;
+  margin: 40px auto;
   padding: 20px;
-  gap: 20px;
+  gap: 40px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9fafc;
+  border-radius: 12px;
 }
 
 .product-image-container {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image {
-  max-width: 100%;
+  width: 100%;
+  max-width: 400px;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
 }
 
 .product-info {
@@ -21,61 +29,109 @@
 }
 
 .product-title {
-  font-size: 2em;
+  font-size: 2rem;
   margin-bottom: 10px;
-  font-family: 'Segoe UI', sans-serif;
 }
 
 .product-price {
-  font-size: 1.5em;
-  color: #2c2c2c;
-  margin-bottom: 10px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 15px;
 }
 
 .product-rating {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 15px;
 }
 
 .star {
-  font-size: 1.2em;
+  font-size: 1.2rem;
   color: #ccc;
 }
 
 .star.filled {
-  color: #ffd700;
+  color: #f4b400;
 }
 
 .rating-count {
-  margin-left: 5px;
-  font-size: 0.9em;
+  font-size: 0.9rem;
+  color: #444;
 }
 
 .product-description {
+  color: #555;
+  line-height: 1.6;
   margin-bottom: 20px;
-  line-height: 1.5;
-  color: #666;
 }
 
-.add-to-cart {
-  padding: 10px 20px;
-  background-color: #007bff;
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.quantity-selector button {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  background: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1em;
+  transition: background 0.2s;
 }
 
-.add-to-cart:hover {
+.quantity-selector button:hover {
   background-color: #0056b3;
 }
 
+.quantity-selector span {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.add-to-cart {
+  padding: 12px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-to-cart:hover {
+  background-color: #218838;
+}
+
+/* Loading Spinner */
+.loader {
+  width: 60px;
+  height: 60px;
+  margin: 100px auto;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .product-detail {
     flex-direction: column;
-    padding: 10px;
+    padding: 20px 15px;
   }
 
   .product-image {

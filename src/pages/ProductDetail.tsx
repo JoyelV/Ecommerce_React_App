@@ -12,6 +12,7 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -31,12 +32,14 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product);
-      alert('Product added to cart!'); 
+      for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+      }
+      alert('Product added to cart!');
     }
   };
 
-  if (loading) return <p>Loading product details...</p>;
+  if (loading) return <div className="loader"></div>;
   if (error) return <p>{error}</p>;
   if (!product) return <p>Product not found.</p>;
 
@@ -58,6 +61,13 @@ const ProductDetail: React.FC = () => {
           <span className="rating-count">({product.rating.count})</span>
         </div>
         <p className="product-description">{product.description}</p>
+
+        <div className="quantity-selector">
+          <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+          <span>{quantity}</span>
+          <button onClick={() => setQuantity(quantity + 1)}>+</button>
+        </div>
+
         <button className="add-to-cart" onClick={handleAddToCart}>
           Add to Cart
         </button>

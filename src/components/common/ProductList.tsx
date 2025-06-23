@@ -4,6 +4,8 @@ import { FilterState, Product } from '../../types';
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
 import './ProductList.css';
 import { fetchProducts } from '../../services/api';
+import { BsGrid3X3GapFill } from 'react-icons/bs';
+import { FaSpinner } from 'react-icons/fa';
 
 interface ProductListProps {
   filters: FilterState;
@@ -14,8 +16,11 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [wishlist, setWishlist] = useState<Set<number>>(new Set());
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'priceAsc' | 'priceDesc' | 'name'>('priceAsc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const [sortBy, setSortBy] = useState<'priceAsc' | 'priceDesc' | 'name'>(
+    'priceAsc'
+  );
 
   useEffect(() => {
     const getProducts = async () => {
@@ -33,16 +38,22 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
     getProducts();
   }, []);
 
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredProducts, currentPage]);
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   useEffect(() => {
     if (!loading) {
       let filtered = [...products];
-
-      // Apply search
-      if (searchTerm) {
-        filtered = filtered.filter((product) =>
-          product.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
 
       // Apply filters
       if (filters.brands.length > 0) {
@@ -53,12 +64,15 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
 
       filtered = filtered.filter(
         (product) =>
-          product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1]
+          product.price >= filters.priceRange[0] &&
+          product.price <= filters.priceRange[1]
       );
 
       if (filters.ratings.length > 0) {
         filtered = filtered.filter((product) =>
-          filters.ratings.some((rating) => Math.round(product.rating.rate) >= rating)
+          filters.ratings.some(
+            (rating) => Math.round(product.rating.rate) >= rating
+          )
         );
       }
 
@@ -70,10 +84,17 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
       });
 
       setFilteredProducts(filtered);
+      setCurrentPage(1);
     }
-  }, [filters, products, loading, searchTerm, sortBy]);
+  }, [filters, products, loading, sortBy]);
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading) {
+    return (
+      <div className="spinner-container">
+        <FaSpinner className="spinner" />
+      </div>
+    );
+  }
 
   const toggleWishlist = (productId: number) => {
     setWishlist((prev) => {
@@ -88,62 +109,103 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
   };
 
   return (
-    <div className="product-list">
-      <div className="product-list-controls">
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="product-search-input"
-        />
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as 'priceAsc' | 'priceDesc' | 'name')}
-          className="product-sort-select"
-        >
-          <option value="priceAsc">Price: Low to High</option>
-          <option value="priceDesc">Price: High to Low</option>
-          <option value="name">Name</option>
-        </select>
+    <>
+      {/* Top bar with Sort dropdown on right */}
+      <div className="product-top-bar">
+        <div className="top-bar-left">
+          <BsGrid3X3GapFill className="grid-icon" />
+        </div>
+        <div className="sort-dropdown">
+          <span>Sort by:</span>
+          <select
+            value={sortBy}
+            onChange={(e) =>
+              setSortBy(e.target.value as 'priceAsc' | 'priceDesc' | 'name')
+            }
+          >
+            <option value="priceAsc">Price: Low to High</option>
+            <option value="priceDesc">Price: High to Low</option>
+            <option value="name">Name</option>
+          </select>
+        </div>
       </div>
-      {filteredProducts.length > 0 ? (
-        filteredProducts.map((product) => (
-          <Link to={`/product/${product.id}`} key={product.id} className="product-card-link">
-            <div className="product-item">
-              <div className="product-image-container">
-                <img src={product.image} alt={product.title} className="product-image" />
-                <button
-                  className="wishlist-icon"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleWishlist(product.id);
-                  }}
-                >
-                  {wishlist.has(product.id) ? <FaHeart /> : <FaRegHeart />}
-                </button>
-              </div>
-              <h3 className="product-title">{product.title}</h3>
-              <p className="product-description">
-                {product.description.substring(0, 100)}...
-              </p>
-              <p className="product-price">${product.price.toFixed(2)}</p>
-              <div className="product-rating">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={`star ${i < Math.round(product.rating.rate) ? 'filled' : ''}`}
+
+      <div className="product-list">
+        {paginatedProducts.length > 0 ? (
+          paginatedProducts.map((product) => (
+            <Link
+              to={`/product/${product.id}`}
+              key={product.id}
+              className="product-card-link"
+            >
+              <div className="product-item">
+                <div className="product-image-container">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="product-image"
                   />
-                ))}
-                <span className="rating-count">({product.rating.count})</span>
+                  <button
+                    className="wishlist-icon"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleWishlist(product.id);
+                    }}
+                  >
+                    {wishlist.has(product.id) ? <FaHeart /> : <FaRegHeart />}
+                  </button>
+                </div>
+                <h3 className="product-title">{product.title}</h3>
+                <p className="product-description">
+                  {product.description.substring(0, 60)}...
+                </p>
+                <p className="product-price">₹ {product.price.toFixed(2)}</p>
+                <div className="product-rating">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar
+                      key={i}
+                      className={`star ${
+                        i < Math.round(product.rating.rate) ? 'filled' : ''
+                      }`}
+                    />
+                  ))}
+                  <span className="rating-count">({product.rating.count})</span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))
-      ) : (
-        <p>No products match the selected filters or search.</p>
+            </Link>
+          ))
+        ) : (
+          <p>No products match the selected filters.</p>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            &lt;
+          </button>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i + 1}
+              className={currentPage === i + 1 ? 'active' : ''}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            &gt;
+          </button>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

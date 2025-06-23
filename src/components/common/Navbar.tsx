@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FaSearch, FaBars, FaTimes, FaShoppingCart, FaUser } from 'react-icons/fa';
+import {
+  FaSearch,
+  FaBars,
+  FaTimes,
+  FaShoppingCart,
+  FaUser,
+} from 'react-icons/fa';
 import './Navbar.css';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -15,7 +21,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    setIsMobileMenuOpen(false); 
+    setIsMobileMenuOpen(false);
   };
 
   React.useEffect(() => {
@@ -33,7 +39,20 @@ const Navbar: React.FC = () => {
         {/* Left: Logo + Search */}
         <div className="navbar-left">
           <NavLink to="/" className="navbar-logo">
-            <img src="/logo.svg" alt="Logo" className="navbar-logo-icon" />
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 1024 1024"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="512" cy="512" r="512" fill="#1A73E8" />
+              <path
+                d="M512 256A256 256 0 1 1 256 512H384A128 128 0 1 0 512 384V256Z"
+                fill="#fff"
+              />
+            </svg>
+
             <span className="navbar-logo-text">Logo Here</span>
           </NavLink>
 
@@ -64,7 +83,7 @@ const Navbar: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setIsZoffiOpen(!isZoffiOpen);
-                setIsMoreOpen(false); // Close other dropdown
+                setIsMoreOpen(false); 
               }}
             >
               Zoffi ▼
@@ -72,19 +91,38 @@ const Navbar: React.FC = () => {
             {isZoffiOpen && (
               <ul className="navbar-dropdown-menu">
                 <li>
-                  <NavLink to="/category/men" onClick={() => setIsZoffiOpen(false)}>Men</NavLink>
+                  <NavLink
+                    to="/category/men"
+                    onClick={() => setIsZoffiOpen(false)}
+                  >
+                    Men
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/category/women" onClick={() => setIsZoffiOpen(false)}>Women</NavLink>
+                  <NavLink
+                    to="/category/women"
+                    onClick={() => setIsZoffiOpen(false)}
+                  >
+                    Women
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/category/electronics" onClick={() => setIsZoffiOpen(false)}>Electronics</NavLink>
+                  <NavLink
+                    to="/category/electronics"
+                    onClick={() => setIsZoffiOpen(false)}
+                  >
+                    Electronics
+                  </NavLink>
                 </li>
               </ul>
             )}
           </div>
 
-          <NavLink to="/seller" className="navbar-link" onClick={() => setIsMobileMenuOpen(false)}>
+          <NavLink
+            to="/seller"
+            className="navbar-link"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
             Become a Seller
           </NavLink>
 
@@ -95,7 +133,7 @@ const Navbar: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMoreOpen(!isMoreOpen);
-                setIsZoffiOpen(false); // Close other dropdown
+                setIsZoffiOpen(false); 
               }}
             >
               More ▼
@@ -103,10 +141,14 @@ const Navbar: React.FC = () => {
             {isMoreOpen && (
               <ul className="navbar-dropdown-menu">
                 <li>
-                  <NavLink to="/about" onClick={() => setIsMoreOpen(false)}>About</NavLink>
+                  <NavLink to="/about" onClick={() => setIsMoreOpen(false)}>
+                    About
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/contact" onClick={() => setIsMoreOpen(false)}>Contact</NavLink>
+                  <NavLink to="/contact" onClick={() => setIsMoreOpen(false)}>
+                    Contact
+                  </NavLink>
                 </li>
               </ul>
             )}
@@ -121,15 +163,25 @@ const Navbar: React.FC = () => {
                 </button>
               </>
             ) : (
-              <NavLink to="/login" className="navbar-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <NavLink
+                to="/login"
+                className="navbar-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 Login
               </NavLink>
             )}
           </div>
 
-          <Link to="/cart" className="cart-link" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link
+            to="/cart"
+            className="cart-link"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
             <FaShoppingCart />
-            {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+            {cartItemCount > 0 && (
+              <span className="cart-badge">{cartItemCount}</span>
+            )}
           </Link>
         </div>
       </div>

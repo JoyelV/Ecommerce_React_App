@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Product } from '../types';
+import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import './Cart.css';
 
 const Cart: React.FC = () => {
-  const { cart, addToCart, removeFromCart, updateQuantity } = useCart();
+  const { cart, updateQuantity, removeFromCart } = useCart();
 
   const calculateSubtotal = () => {
     return cart
@@ -14,12 +14,18 @@ const Cart: React.FC = () => {
   };
 
   if (cart.length === 0) {
-    return <p>Your cart is empty. <Link to="/">Continue shopping</Link></p>;
+    return (
+      <div className="empty-cart">
+        <p>Your cart is empty.</p>
+        <Link to="/" className="continue-shopping">Continue Shopping</Link>
+      </div>
+    );
   }
 
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
+
       <div className="cart-items">
         {cart.map((item) => (
           <div key={item.product.id} className="cart-item">
@@ -30,34 +36,34 @@ const Cart: React.FC = () => {
             />
             <div className="cart-item-details">
               <h3 className="cart-item-title">{item.product.title}</h3>
-              <p className="cart-item-price">${item.product.price.toFixed(2)}</p>
-              <div className="cart-item-quantity">
+              <p className="cart-item-price">₹ {item.product.price.toFixed(2)}</p>
+
+              <div className="cart-item-controls">
+                <div className="quantity-controls">
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>
+                    <FaMinus />
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>
+                    <FaPlus />
+                  </button>
+                </div>
                 <button
-                  onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                  className="quantity-button"
-                >
-                  -
-                </button>
-                <span className="quantity-value">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                  className="quantity-button"
-                >
-                  +
-                </button>
-                <button
-                  onClick={() => removeFromCart(item.product.id)}
                   className="remove-button"
+                  onClick={() => removeFromCart(item.product.id)}
                 >
-                  Remove
+                  <FaTrash /> Remove
                 </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       <div className="cart-summary">
-        <p className="subtotal">Subtotal: ${calculateSubtotal()}</p>
+        <p className="subtotal">
+          Subtotal: <strong>₹ {calculateSubtotal()}</strong>
+        </p>
         <Link to="/checkout" className="checkout-button">
           Proceed to Checkout
         </Link>
