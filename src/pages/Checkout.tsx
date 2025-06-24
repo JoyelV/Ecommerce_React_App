@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Product } from '../types';
 import { useAuth } from '../context/AuthContext';
 import './Checkout.css';
 
@@ -61,14 +60,12 @@ const Checkout: React.FC = () => {
     if (latestOrder) {
       const paymentResult = await processPayment(latestOrder.id, paymentDetails);
       if (paymentResult.success) {
-        setMessage(paymentResult.message);
+        setMessage('Order placed successfully!');
         setIsOrderPlaced(true);
         clearCart();
         setTimeout(() => {
-          setMessage(null);
-          setIsOrderPlaced(false);
-          navigate('/');
-        }, 3000);
+          navigate('/order-history'); 
+        }, 3000); 
       } else {
         setError(paymentResult.message);
       }
@@ -180,7 +177,7 @@ const Checkout: React.FC = () => {
           </div>
         </>
       ) : (
-        <p className="order-success">Order placed successfully! Redirecting to home...</p>
+        <p className="order-success">Order placed successfully! Redirecting to Order History...</p>
       )}
     </div>
   );

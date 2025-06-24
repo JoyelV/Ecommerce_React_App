@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import {
   FaSearch,
@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = () => {
       setIsZoffiOpen(false);
       setIsMoreOpen(false);
@@ -52,7 +52,6 @@ const Navbar: React.FC = () => {
                 fill="#fff"
               />
             </svg>
-
             <span className="navbar-logo-text">Logo Here</span>
           </NavLink>
 
@@ -83,7 +82,7 @@ const Navbar: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setIsZoffiOpen(!isZoffiOpen);
-                setIsMoreOpen(false); 
+                setIsMoreOpen(false);
               }}
             >
               Zoffi ▼
@@ -133,7 +132,7 @@ const Navbar: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMoreOpen(!isMoreOpen);
-                setIsZoffiOpen(false); 
+                setIsZoffiOpen(false);
               }}
             >
               More ▼
@@ -157,7 +156,13 @@ const Navbar: React.FC = () => {
           <div className="navbar-auth">
             {user ? (
               <>
-                <span className="navbar-user">{user.username}</span>
+                <NavLink
+                  to="/profile"
+                  className="navbar-user"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {user.username}
+                </NavLink>
                 <button className="navbar-logout" onClick={handleLogout}>
                   Logout
                 </button>

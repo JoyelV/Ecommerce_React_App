@@ -38,7 +38,6 @@ const Profile: React.FC = () => {
       if (response.ok) {
         setMessage('Profile updated successfully!');
         setIsEditing(false);
-        // Update user in context (simplified; in production, update via context state)
         setTimeout(() => setMessage(null), 2000);
       } else {
         setError('Failed to update profile. Please try again.');
