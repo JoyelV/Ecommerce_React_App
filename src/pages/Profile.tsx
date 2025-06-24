@@ -29,12 +29,13 @@ const Profile: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`https://fakestoreapi.com/users/${user.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ ...profile, id: user.id }),
       });
       const data = await response.json();
+      console.log(data)
       if (response.ok) {
         setMessage('Profile updated successfully!');
         setIsEditing(false);
