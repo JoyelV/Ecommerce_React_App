@@ -29,6 +29,7 @@ const AppRoutes = () => (
       <Route path="register" element={<Register />} />
       <Route path="cart" element={<Cart />} />
       <Route path="checkout" element={<Checkout />} />
+      <Route path="*" element={<NotFound />} />
       <Route
         path="order-history"
         element={
@@ -46,7 +47,6 @@ const AppRoutes = () => (
         }
       />
     </Route>
-    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 
