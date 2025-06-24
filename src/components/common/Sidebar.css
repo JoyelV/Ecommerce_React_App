@@ -1,50 +1,46 @@
 .sidebar-ui {
-  width: 300px;
-  padding: 20px;
-  background-color: #f9f9fb;
-  border-radius: 20px;
+  width: 100%;
+  max-width: 300px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
   font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
 }
 
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   font-weight: 600;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
+  font-size: 18px;
+  margin-bottom: 16px;
 }
 
 .advanced {
-  color: #8f8f8f;
-  font-size: 0.9rem;
+  font-size: 14px;
+  color: #666;
 }
 
 .sidebar-card {
-  background: #fff;
-  border-radius: 15px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
   font-weight: 600;
-  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .card-content {
-  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .search-input {
-  width: 100%;
   padding: 8px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 .brand-list {
@@ -54,130 +50,287 @@
 }
 
 .brand-item {
+  padding: 6px 0;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
-  padding: 6px 4px;
-  font-size: 0.95rem;
-  color: #333;
-  cursor: pointer;
-}
-
-.brand-item small {
-  color: #aaa;
+  font-size: 15px;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 .brand-item.selected {
-  color: #1a73e8;
-  font-weight: 500;
+  font-weight: bold;
+  color: #3b82f6;
 }
 
-.checkmark {
-  color: #1a73e8;
+.brand-item .tick {
+  margin-left: 6px;
+  color: #3b82f6;
 }
 
-/* Histogram bars */
 .histogram {
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
-  height: 60px;
-  margin: 10px 0;
+  gap: 4px;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: auto;
+  min-height: 40px;
+  padding: 5px 0;
 }
 
 .bar {
-  width: 6px;
-  background-color: #cfe3fc;
-  border-radius: 3px;
+  flex: 1;
+  background: #cfe2ff;
+  border-radius: 2px;
+  height: auto;
+  min-height: 20px;
+  transition: height 0.3s ease;
 }
 
-/* Dual Range Slider */
 .range-slider {
   position: relative;
-  width: 100%;
-  height: 30px;
-  margin: 10px 0;
+  display: flex;
+  gap: 10px;
 }
 
 .range-slider input[type='range'] {
-  position: absolute;
   width: 100%;
-  height: 4px;
-  background: none;
-  pointer-events: none;
-  -webkit-appearance: none;
-  z-index: 2;
-}
-
-.range-slider input[type='range']::-webkit-slider-thumb {
-  pointer-events: all;
-  width: 16px;
-  height: 16px;
-  background: #1a73e8;
-  border-radius: 50%;
-  border: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 3;
-}
-
-.range-slider input[type='range']::-moz-range-thumb {
-  pointer-events: all;
-  width: 16px;
-  height: 16px;
-  background: #1a73e8;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 3;
-}
-
-.slider-track {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 4px;
-  width: 100%;
-  background: #ddd;
-  border-radius: 2px;
-  z-index: 1;
 }
 
 .price-values {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
 }
 
 .price-values button {
-  border: 1px solid #ddd;
-  background: #fff;
-  padding: 6px 10px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: default;
+  padding: 6px 10px;
+  background: #fff;
+  cursor: pointer;
 }
 
-.rating-section .rating-row {
+.size-section {
   display: flex;
-  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.star {
-  color: #ddd;
-  font-size: 1rem;
-  margin-right: 4px;
+.size-btn {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
 }
 
-.star.filled {
-  color: #f7b500;
+.color-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
+.color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #ccc;
+  cursor: pointer;
+}
+
+/* Sizes Container - Matches 257x124 with rounded box */
+.size-container {
+  width: 257px;
+  height: 124px;
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Size Buttons - Matches 42x28, border-radius 4px */
+.size-btn {
+  width: 42px;
+  height: 28px;
+  padding: 0;
+  border-radius: 4px;
+  border: 0.5px solid #ccc;
+  background: white;
+  font-size: 13px;
+  text-align: center;
+  line-height: 28px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.size-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Color options in horizontal row */
+.color-section-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+
+/* Re-adjust histogram */
+.histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 60px;
+  padding: 5px 0;
+}
+.bar {
+  width: 8px;
+  background: #cfe2ff;
+  border-radius: 2px;
+}
+
+/* Range slider styles*/
+.range-slider {
+  width: 296px;
+  height: 4px;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.slider-input {
+  width: 100%;
+  height: 4px;
+  background: #2874f0;
+  border-radius: 50px;
+  appearance: none;
+  outline: none;
+}
+
+/* Thumb styling for Chrome, Safari, Edge */
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #2874f0;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  margin-top: -6px;
+}
+
+/* For Firefox */
+.slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #2874f0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Price value buttons */
+.price-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.price-values button {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
   .sidebar-ui {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    font-size: 16px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .price-values {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .size-container {
     width: 100%;
-    padding: 10px;
+    height: auto;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .size-btn {
+    width: 40px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .color-section-row {
+    justify-content: start;
+    gap: 10px;
+  }
+
+  .range-slider {
+    width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .histogram {
+    gap: 2px;
+  }
+
+  .bar {
+    min-height: 16px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .sidebar-ui {
+    max-width: 280px;
+    padding: 14px;
+  }
+
+  .size-container {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .range-slider {
+    width: 100%;
+  }
+
+  .sidebar-header {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .sidebar-ui {
+    max-width: 300px;
+    padding: 16px;
+  }
+
+  .range-slider {
+    width: 296px;
+  }
+
+  .size-container {
+    width: 257px;
+  }
+}
+

@@ -1,3 +1,4 @@
+// src/components/common/ProductList.tsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FilterState, Product } from '../../types';
@@ -18,9 +19,9 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
   const [wishlist, setWishlist] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-  const [sortBy, setSortBy] = useState<'priceAsc' | 'priceDesc' | 'name'>(
-    'priceAsc'
-  );
+  const [sortBy, setSortBy] = useState<
+    'priceAsc' | 'priceDesc' | 'nameAsc' | 'nameDesc' | 'popularity'
+  >('priceAsc');
 
   useEffect(() => {
     const getProducts = async () => {
@@ -80,7 +81,10 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
       filtered = [...filtered].sort((a, b) => {
         if (sortBy === 'priceAsc') return a.price - b.price;
         if (sortBy === 'priceDesc') return b.price - a.price;
-        return a.title.localeCompare(b.title);
+        if (sortBy === 'nameAsc') return a.title.localeCompare(b.title);
+        if (sortBy === 'nameDesc') return b.title.localeCompare(a.title);
+        if (sortBy === 'popularity') return b.rating.rate - a.rating.rate;
+        return 0;
       });
 
       setFilteredProducts(filtered);
@@ -120,12 +124,21 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
           <select
             value={sortBy}
             onChange={(e) =>
-              setSortBy(e.target.value as 'priceAsc' | 'priceDesc' | 'name')
+              setSortBy(
+                e.target.value as
+                  | 'priceAsc'
+                  | 'priceDesc'
+                  | 'nameAsc'
+                  | 'nameDesc'
+                  | 'popularity'
+              )
             }
           >
             <option value="priceAsc">Price: Low to High</option>
             <option value="priceDesc">Price: High to Low</option>
-            <option value="name">Name</option>
+            <option value="nameAsc">Name: A to Z</option>
+            <option value="nameDesc">Name: Z to A</option>
+            <option value="popularity">Popularity</option>
           </select>
         </div>
       </div>

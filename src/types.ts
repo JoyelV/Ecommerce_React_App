@@ -17,5 +17,5 @@ export interface User {
 export interface FilterState {
   brands: string[];
   priceRange: [number, number];
-  ratings: number[];
+  ratings: number[]; 
 }

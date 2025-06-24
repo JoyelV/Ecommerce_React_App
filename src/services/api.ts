@@ -22,3 +22,9 @@ export const fetchProduct = async (id: number): Promise<Product> => {
   if (!response.ok) throw new Error('Failed to fetch product');
   return response.json();
 };
+
+export const fetchProductsByCategory = async (category: string): Promise<Product[]> => {
+  const res = await fetch(`https://fakestoreapi.com/products/category/${encodeURIComponent(category)}`);
+  if (!res.ok) throw new Error('Failed to fetch products by category');
+  return res.json();
+};
