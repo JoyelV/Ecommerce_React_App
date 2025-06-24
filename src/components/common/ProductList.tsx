@@ -1,4 +1,3 @@
-// src/components/common/ProductList.tsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FilterState, Product } from '../../types';

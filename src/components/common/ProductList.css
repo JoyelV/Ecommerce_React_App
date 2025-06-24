@@ -39,13 +39,20 @@
 }
 
 .product-item {
+  max-width: 276px;
+  width: 100%;
+  height: 431px;
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 16.56px;
+  border: 1.38px solid #e0e0e0;
   padding: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.3s ease;
   position: relative;
   font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .product-item:hover {
@@ -56,18 +63,29 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 259px; /* Maintain Figma height as base */
-  overflow: hidden; /* Prevent overflow on smaller screens */
+  height: 259px; /* Based on your Figma spec */
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
 }
 
 .product-image {
-  max-width: 100%; /* Fit within container */
-  max-height: 100%; /* Fit within container */
-  object-fit: contain; /* Scale proportionally, maintain aspect ratio */
-  border-radius: 10.42px;
-  margin: 0 auto 1rem auto;
-  display: block;
-  transition: transform 0.3s ease; /* Smooth scaling */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.product-item:hover .product-image {
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+.product-item img {
+  width: 100%;
+  height: 200px; /* or auto if aspect-ratio is handled */
+  object-fit: contain;
+  border-radius: 12px;
 }
 
 .product-item:hover .product-image {
