@@ -28,7 +28,7 @@
 
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Enforce 3 cards per row */
   gap: 2rem;
   padding: 1rem 0;
 }
@@ -214,7 +214,27 @@
   font-weight: 600;
 }
 
-/* Mobile Responsiveness */
+/* Responsive */
+@media (max-width: 1024px) {
+  .product-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row on tablets */
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+
+  .product-image-container {
+    height: 200px; /* Reduced height for tablets */
+  }
+
+  .product-title {
+    font-size: 18px;
+  }
+
+  .product-description {
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 768px) {
   .product-list {
     grid-template-columns: 1fr; /* Single column on mobile */
@@ -224,11 +244,6 @@
 
   .product-image-container {
     height: 150px; /* Reduced height for mobile */
-  }
-
-  .product-image {
-    max-width: 100%;
-    max-height: 100%;
   }
 
   .product-title {

@@ -9,6 +9,7 @@ import Checkout from '../pages/Checkout';
 import OrderHistory from '../pages/OrderHistory';
 import { useAuth } from '../context/AuthContext';
 import Profile from '../pages/Profile';
+import ProductListing from '../pages/ProductListing';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -22,6 +23,7 @@ const AppRoutes = () => (
     <Route path="/" element={<Outlet />}>
       <Route index element={<Home />} />
       <Route path="product/:id" element={<ProductDetail />} />
+      <Route path="product-list" element={<ProductListing />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="cart" element={<Cart />} />
