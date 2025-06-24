@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FilterState, Product } from '../../types';
-import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
-import './ProductList.css';
 import { fetchProducts } from '../../services/api';
 import { BsGrid3X3GapFill } from 'react-icons/bs';
 import { FaSpinner } from 'react-icons/fa';
+import ProductCard from './ProductCard'; 
+import './ProductList.css';
 
 interface ProductListProps {
   filters: FilterState;
@@ -81,7 +81,7 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
         if (sortBy === 'priceAsc') return a.price - b.price;
         if (sortBy === 'priceDesc') return b.price - a.price;
         if (sortBy === 'nameAsc') return a.title.localeCompare(b.title);
-        if (sortBy === 'nameDesc') return b.title.localeCompare(a.title);
+        if (sortBy === 'nameDesc') return b.title.localeCompare(b.title);
         if (sortBy === 'popularity') return b.rating.rate - a.rating.rate;
         return 0;
       });
@@ -145,46 +145,12 @@ const ProductList: React.FC<ProductListProps> = ({ filters }) => {
       <div className="product-list">
         {paginatedProducts.length > 0 ? (
           paginatedProducts.map((product) => (
-            <Link
-              to={`/product/${product.id}`}
+            <ProductCard
               key={product.id}
-              className="product-card-link"
-            >
-              <div className="product-item">
-                <div className="product-image-container">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="product-image"
-                  />
-                  <button
-                    className="wishlist-icon"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleWishlist(product.id);
-                    }}
-                  >
-                    {wishlist.has(product.id) ? <FaHeart /> : <FaRegHeart />}
-                  </button>
-                </div>
-                <h3 className="product-title">{product.title}</h3>
-                <p className="product-description">
-                  {product.description.substring(0, 60)}...
-                </p>
-                <p className="product-price">₹ {product.price.toFixed(2)}</p>
-                <div className="product-rating">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar
-                      key={i}
-                      className={`star ${
-                        i < Math.round(product.rating.rate) ? 'filled' : ''
-                      }`}
-                    />
-                  ))}
-                  <span className="rating-count">({product.rating.count})</span>
-                </div>
-              </div>
-            </Link>
+              product={product}
+              isInWishlist={wishlist.has(product.id)}
+              onWishlistToggle={toggleWishlist}
+            />
           ))
         ) : (
           <p>No products match the selected filters.</p>
