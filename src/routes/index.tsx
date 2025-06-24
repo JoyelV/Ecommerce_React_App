@@ -10,6 +10,7 @@ import OrderHistory from '../pages/OrderHistory';
 import { useAuth } from '../context/AuthContext';
 import Profile from '../pages/Profile';
 import ProductListing from '../pages/ProductListing';
+import NotFound from '../pages/NotFound';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -45,6 +46,7 @@ const AppRoutes = () => (
         }
       />
     </Route>
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 

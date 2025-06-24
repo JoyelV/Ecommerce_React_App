@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.not-found-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 101px); /* Adjust for Navbar height */
+  background-color: #f9fafc;
+  padding: 20px;
+}
+
+.not-found-content {
+  text-align: center;
+  color: #1a1a1a;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  width: 100%;
+}
+
+.not-found-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1a73e8;
+}
+
+.not-found-message {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.not-found-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #1a73e8;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.not-found-button:hover {
+  background-color: #1557b0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .not-found-page {
+    height: auto;
+    padding: 10px;
+  }
+
+  .not-found-content {
+    padding: 1.5rem;
+  }
+
+  .not-found-title {
+    font-size: 3rem;
+  }
+
+  .not-found-message {
+    font-size: 1rem;
+  }
+
+  .not-found-button {
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-content {
+    padding: 1rem;
+  }
+
+  .not-found-title {
+    font-size: 2.5rem;
+  }
+
+  .not-found-message {
+    font-size: 0.9rem;
+  }
+
+  .not-found-button {
+    padding: 8px 16px;
+  }
+}
